@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="/update-project.css">
+</head>
+
+<body>
+    <div class="header">
+        <a href="/projects"><img src="/main.png" alt=""></a>
+
+        <ul>
+            <li><a href="/projects/new">Add Project</a></li>
+            <li><a href="">Edit Profile</a></li>
+            <li><a href="/logout">Logout</a></li>
+        </ul>
+    </div>
+    <div class="head-text">
+        <h1>Edit Project</h1>
+    </div>
+
+    <div class="main">
+
+        <div class="update-main">
+
+            <form action="/projects/update" method="POST">
+                <span>Name</span>
+                <div class="form-group">
+
+                    <input type="hidden" name="id" value="<%= project.id %>">
+                    <input name="name" value="<%= project.name %>" required>
+                    <button type="submit">Update Name</button>
+                </div>
+                <span>Description</span>
+                <div class="form-group">
+
+                    <textarea name="description" required><%= project.description %></textarea>
+                    <button type="submit">Update Description</button>
+                </div>
+            </form>
+            <div class="last-input">
+                <input name="name" value="" required><br>
+                <label class="admin-check">
+                    <input type="checkbox" name="admin">
+                    Admin
+                </label>
+            </div>
+        </div>
+        
+        <div class="aside">
+            <button>Project overview</button>
+            <form id="deleteForm-<%= project.id %>" action="/projects/delete/<%= project.id %>" method="POST">
+                <button type="button" class="text-btn deleteButton" data-project-id="<%= project.id %>">
+                    Delete project
+                </button>
+            </form>
+
+        </div>
+
+    </div>
+
+    <!-- ///// Modal window -->
+    <div id="myModal" class="modal">
+        <div class="modal-content">
+            <p>Are you sure?</p>
+            <div class="modal-buttons">
+                <button class="yes" id="yesBtn">Yes</button>
+                <button class="no" id="noBtn">No</button>
+            </div>
+        </div>
+    </div>
+    <script src="/script.js" defer></script>
+</body>
+
+</html>

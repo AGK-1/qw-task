@@ -1,0 +1,48 @@
+* {
+    margin: 0;
+    padding: 0;
+  
+}
+
+a{
+    color: aliceblue;
+    text-decoration: none;
+}
+
+.index-page {
+    padding: auto;
+    margin: auto;
+    text-align: center;
+    padding: 100px;
+    background-color: #fcfcff;
+}
+
+
+.mainInDIv {
+    padding: auto;
+    margin: auto;
+    text-align: center;
+}
+
+
+
+.mainInput {
+    margin: 55px;
+    border: none;
+    width: 120px;
+    height: 35px;
+    background-color: #009aad;
+    font-size: large;
+    border-radius: 3px;
+}
+
+.mainInput:hover {
+    cursor: pointer;
+    background-color: #066b79;
+    color: azure;
+}
+
+#index-h1 {
+    font-size: 70px;
+}
+

@@ -1,0 +1,40 @@
+* {
+    padding: auto;
+    margin: auto;
+    background-color: #fcfcff;
+}
+
+.login-page {
+    text-align: center;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    text-align: center;
+    margin: auto;
+    padding: auto;
+
+}
+
+input {
+    width: 320px;
+    height: 25px;
+    border-radius: 3px;
+    font-size: 20px;
+}
+
+button {
+    background-color: #009aad;
+    color: aliceblue;
+    border: none;
+    border-radius: 3px;
+    width: 95px;
+    height: 30px;
+}
+
+button:hover {
+    background-color: #034f59;
+    color: aliceblue;
+    cursor: pointer;
+}
