@@ -14,7 +14,7 @@ const SESSION_SECRET = 'super-secret-basecamp-key-2026';
 app.use(session({ 
     secret: SESSION_SECRET, 
     resave: false, 
-    saveUninitialized: false,
+    saveUninitialized: false, 
     cookie: { maxAge: 3600000 }
 }));
 

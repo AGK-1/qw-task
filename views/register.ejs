@@ -1,59 +1,13 @@
 <!DOCTYPE html>
 <html>
-
-<head>
-    <link rel="stylesheet" href="/register.css">
-    <title>Register</title>
-</head>
-
+<head><title>Регистрация</title></head>
 <body>
-
-    <!-- <form action="/register" method="POST">
-        <input type="email" name="email" required>
-
-        <input type="password" name="password" required>
-
-        <button type="submit">Register</button>
-    </form> -->
-    <div class="registre-div">
-        <img src="main.png" alt="">
-        <h2>Sign up</h2>
-        <form action="/register" method="POST">
-            <input type="text" name="name" placeholder="name" required>
-            <span class="form-label">Name</span><br>
-            <input type="email" name="email" placeholder="Email" required>
-            <% if (error) { %>
-                <div class="error" style="color:red">
-                    <%= error %>
-                </div>
-                <% } else { %>
-                    <span class="form-label">Email</span><br>
-                    <% } %>
-
-                        <input type="password" name="password" placeholder="Password" >
-                        <% if (pass) { %>
-                            <div class="error" style="color:red">
-                                <%= pass %>
-                            </div>
-                            <% } else { %>
-                                <span class="form-label">Password</span><br>
-                                <% } %>
-
-
-                                    <input type="password" name="password_confirmation"
-                                        placeholder="Password confirmation">
-                                    <% if (pass_confirm) { %>
-                                        <div class="error" style="color:red">
-                                            <%= pass_confirm %>
-                                        </div>
-                                        <% } else { %>
-                                            <span class="form-label">Confirm Password</span><br>
-                                            <% } %>
-                                                
-                                                <button class="btn" type="submit">Sing up</button>
-        </form>
-        <span>Already have an accaount? <a class="href" href="/login">Sing in</a></span>
-    </div>
+    <h1>Регистрация</h1>
+    <form action="/register" method="POST">
+        <input type="email" name="email" placeholder="Email" required><br>
+        <input type="password" name="password" placeholder="Пароль" required><br>
+        <button type="submit">Создать аккаунт</button>
+    </form>
+    <a href="/login">Назад ко входу</a>
 </body>
-
 </html>
