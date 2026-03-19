@@ -1,222 +1,163 @@
-import express from 'express';
-import sqlite3 from 'sqlite3';
-import bcrypt from 'bcrypt';
-import session from 'express-session';
-import { initDB } from './tmp/db.js'
-
-
+const express = require('express');
+const session = require('express-session');
+const bcrypt = require('bcryptjs');
+const crypto = require('crypto');
 const app = express();
-app.set("view engine", "ejs");
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-app.use(express.static('public'));
 
-app.use(session({
-    secret: 'my-secret-key', 
-    resave: false,
+
+app.set('view engine', 'ejs');
+app.use(express.urlencoded({ extended: true }));
+
+
+const SESSION_SECRET = 'super-secret-basecamp-key-2026';
+
+app.use(session({ 
+    secret: SESSION_SECRET, 
+    resave: false, 
     saveUninitialized: false,
-    cookie: {
-        secure: false,
-        maxAge: 1000 * 60 * 60
-    } 
+    cookie: { maxAge: 3600000 }
 }));
 
-app.get('/', (req, res) => {
-    res.render('index');
-});
 
-app.post('/register', async (req, res) => {
-    console.log("Get data:", req.body);
-    const { name, email, password, password_confirmation } = req.body;
-    const db = await initDB();
+let users = [];
+let projects = [];
 
-    try {
-        
-        if (!password || password.trim() === "") {
-            return res.status(400).render("register", {
-                error: null,        
-                pass: "Password is empty!",
-                pass_confirm: null
-            });
-        };
-        if (password != password_confirmation) {
-            return res.status(400).render("register", {
-                error: null,          
-                pass: null,
-                pass_confirm: "Password is not same"
-            });
-        };
-        const saltRounds = 10;
-        const hashedPassword = await bcrypt.hash(password, saltRounds);
+const isAuth = (req, res, next) => req.session.userId ? next() : res.redirect('/login');
 
-       
-        await db.run(
-            'INSERT INTO users (name, email, password, role) VALUES (?, ?, ?, ?)',
-            [name, email, hashedPassword, 'user']
-        );
 
-        res.status(201).send("<h1 style='color:green;'>Account successfully created</h1>\nYou can <a href='/login'>login</a>.");
-    } catch (error) {
-        if (error.message.includes("UNIQUE constraint failed")) {
-            return res.status(400).render("register", {
-                error: "Email has already existed"
-            });
-        }
-        else {
-            console.error(error);
-            res.status(500).send("Server error");
-        }
-    }
-});
+const canManageProject = (req, project) => {
+    return req.session.isAdmin || project.ownerId === req.session.userId;
+};
 
-app.post("/login", async (req, res) => {
+
+
+app.get('/', (req, res) => res.redirect('/projects'));
+
+app.get('/login', (req, res) => res.render('login', { error: null }));
+
+app.post('/login', async (req, res) => {
     const { email, password } = req.body;
-    const db = await initDB();
-    try {
-        const user = await db.get('SELECT * FROM users WHERE email = ?', [email]);
-
-        if (!user) {
-            return res.status(401).send("Wrong email or password");
-        }
-
-        
-        const isMatch = await bcrypt.compare(password, user.password);
-
-        if (isMatch) {
-        
-            req.session.userId = user.id;
-            req.session.userName = user.name;
-            req.session.userEmail = user.email;
-            req.session.userRole = user.role;
-            console.log("Okey");
-           
-            return res.redirect('/projects');
-
-        
-        } else {
-           
-            res.status(401).send("Wrong email or password");
-        }
-    } catch (error) {
-        console.error(error);
-        res.status(500).send("Server error");
-    }
-})
-
-app.get('/projects', async (req, res) => {
-   
-    if (!req.session.userId) {
-        return res.redirect('/login');
-    }
-
-    const db = await initDB();
-  
-    const projects = await db.all('SELECT * FROM projects WHERE user_id = ?', [req.session.userId]);
-    const all_projects = await db.all('SELECT * FROM projects WHERE user_id != ?', [req.session.userId]);
-  
-    res.render('projects', {
-        userName: req.session.userName,
-        userEmail: req.session.userEmail,
-        projects: projects,
-        all_projects: all_projects
-    });
-});
-
-app.post('/projects/delete/:id', async (req, res) => {
-    if (!req.session.userId) {
-        return res.redirect('/login');
-    }
-    const db = await initDB();
-    await db.run(
-        'DELETE FROM projects WHERE id = ? AND user_id = ?',
-        [req.params.id, req.session.userId]
-    );
-    res.redirect('/projects');
-});
-
-app.get("/register", (req, res) => {
-    res.render("register", { error: null, pass: null, pass_confirm: null });
-});
-
-app.get("/login", (req, res) => {
-    res.render("login");
-});
-
-
-app.get('/projects/new', (req, res) => {
-    if (!req.session.userId) {
-        return res.redirect('/login');
-    }
-    res.render('new-project', {
-        userName: req.session.userName,
-        userEmail: req.session.userEmail
-    });
-});
-
-app.post('/projects/new', async (req, res) => {
-    if (!req.session.userId) {
-        return res.redirect('/login');
-    }
-
-    const { name, description } = req.body;
-
-    const db = await initDB();
-    await db.run(
-        'INSERT INTO projects (name, description, user_id) VALUES (?, ?, ?)',
-        [name, description, req.session.userId]
-    );
-
-    res.redirect('/projects');
-});
-
-app.post('/projects/update', async (req, res) => {
-    if (!req.session.userId) {
-        return res.redirect('/login');
-    }
-
-    const { id, name, description } = req.body;
-
-    const db = await initDB();
-
-    await db.run(
-        'UPDATE projects SET name = ?, description = ? WHERE id = ? AND user_id = ?',
-        [name, description, id, req.session.userId]
-    );
-
-    res.redirect('/projects');
-})
-
-app.get('/projects/edit/:id', async (req, res) => {
-    if (!req.session.userId) {
-        return res.redirect('/login');
-    }
-
-    const db = await initDB();
-
-    const project = await db.get(
-        'SELECT * FROM projects WHERE id = ? AND user_id = ?',
-        [req.params.id, req.session.userId]
-    );
-
-    if (!project) {
+    const user = users.find(u => u.email === email);
+    
+    if (user && await bcrypt.compare(password, user.password)) {
+        req.session.userId = user.id;
+        req.session.isAdmin = user.isAdmin || false; 
         return res.redirect('/projects');
     }
-
-    res.render('update-project', { project });
+    res.render('login', { error: 'Неверный логин или пароль' });
 });
 
+app.get('/register', (req, res) => res.render('register', { error: null }));
 
-app.get('/logout', (req, res) => {
+app.post('/register', async (req, res) => {
+    const { email, password } = req.body;
+    
+    if (users.find(u => u.email === email)) {
+        return res.render('register', { error: 'Пользователь с таким Email уже есть' });
+    }
 
-    req.session.destroy((err) => {
-        if (err) {
-            console.error(err);
-            return res.status(500).send("Ошибка при выходе");
-        }
-        res.redirect('/login');
+    const hash = await bcrypt.hash(password, 10);
+    const newUser = { 
+        id: Date.now().toString(), 
+        email, 
+        password: hash, 
+        isAdmin: users.length === 0 
+    };
+    
+    users.push(newUser);
+    res.redirect('/login');
+});
+
+app.get('/logout', (req, res) => { 
+    req.session.destroy(); 
+    res.redirect('/login'); 
+});
+
+app.get('/projects', isAuth, (req, res) => {
+    const myProjects = projects.filter(p => req.session.isAdmin || p.ownerId === req.session.userId);
+    res.render('projects', { 
+        projects: myProjects, 
+        isAdmin: req.session.isAdmin 
     });
 });
 
-app.listen(3000, async (req, res) => {
-    console.log("Server running in http://localhost:3000/projects");
+
+app.post('/projects', isAuth, (req, res) => {
+    const newProject = { 
+        id: Date.now().toString(), 
+        title: req.body.title || 'Новый проект', 
+        ownerId: req.session.userId,
+        tasks: []
+    };
+    projects.push(newProject);
+    res.redirect('/projects');
+});
+
+
+app.get('/projects/:id', isAuth, (req, res) => {
+    const project = projects.find(p => p.id === req.params.id);
+    if (!project) return res.status(404).send('Проект не найден');
+    
+    if (!canManageProject(req, project)) {
+        return res.status(403).send('Доступ запрещен');
+    }
+    res.render('project_show', { project });
+});
+
+
+app.get('/projects/:id/edit', isAuth, (req, res) => {
+    const project = projects.find(p => p.id === req.params.id);
+    if (!project || !canManageProject(req, project)) {
+        return res.status(403).send('Нет прав на редактирование');
+    }
+    res.render('project_edit', { project });
+});
+
+
+app.post('/projects/:id/update', isAuth, (req, res) => {
+    const project = projects.find(p => p.id === req.params.id);
+    if (project && canManageProject(req, project)) {
+        project.title = req.body.title;
+    }
+    res.redirect('/projects');
+});
+
+app.post('/projects/:id/delete', isAuth, (req, res) => {
+    const index = projects.findIndex(p => p.id === req.params.id);
+    if (index !== -1 && canManageProject(req, projects[index])) {
+        projects.splice(index, 1);
+    }
+    res.redirect('/projects');
+});
+
+
+app.post('/projects/:id/tasks', isAuth, (req, res) => {
+    const project = projects.find(p => p.id === req.params.id);
+    if (project && canManageProject(req, project)) {
+        project.tasks.push({ 
+            id: Date.now().toString(), 
+            text: req.body.text, 
+            completed: false 
+        });
+    }
+    res.redirect(`/projects/${req.params.id}`);
+});
+
+app.post('/projects/:pId/tasks/:tId/toggle', isAuth, (req, res) => {
+    const project = projects.find(p => p.id === req.params.pId);
+    if (project && canManageProject(req, project)) {
+        const task = project.tasks.find(t => t.id === req.params.tId);
+        if (task) task.completed = !task.completed;
+    }
+    res.redirect(`/projects/${req.params.pId}`);
+});
+
+
+const PORT = 3005;
+app.listen(PORT, () => {
+    console.log(`
+    ✅ Сервер запущен!
+    🔗 Ссылка: http://localhost:${PORT}
+    __________________________________
+    `);
 });
