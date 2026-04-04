@@ -34,6 +34,7 @@ export async function deleteUser(id, name, email, password) {
         'DELETE FROM users WHERE id = ?',
         [name, email, password, id]
     );
+
     return "User deleted";
 }
 
