@@ -1,43 +1,87 @@
+import bcrypt from 'bcrypt';
+import {
+    getAllUsers,
+    getUser,
+    createUser,
+    updateUser,
+    deleteUser
+} from '../models/userModel.js';
 
-
-
-
-app.get('/login', (req, res) => res.render('login', { error: null }));
-
-app.post('/login', async (req, res) => {
-    const { email, password } = req.body;
-    const user = users.find(u => u.email === email);
-
-    if (user && await bcrypt.compare(password, user.password)) {
-        req.session.userId = user.id;
-        req.session.isAdmin = user.isAdmin || false;
-        return res.redirect('/projects');
+// GET /users
+export async function getUsersController(req, res) {
+    try {
+        const users = await getAllUsers();
+        res.json(users);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
     }
-    res.render('login', { error: 'Неверный логин или пароль' });
-});
+}
 
-app.get('/register', (req, res) => res.render('register', { error: null }));
+// GET /users/:id
+export async function getUserController(req, res) {
+    try {
+        const { id } = req.params;
+        const user = await getUser(id);
 
-app.post('/register', async (req, res) => {
-    const { email, password } = req.body;
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
 
-    if (users.find(u => u.email === email)) {
-        return res.render('register', { error: 'Пользователь с таким Email уже есть' });
+        res.json(user);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
     }
+}
 
-    const hash = await bcrypt.hash(password, 10);
-    const newUser = {
-        id: Date.now().toString(),
-        email,
-        password: hash,
-        isAdmin: users.length === 0
-    };
+// POST /users (register)
+export async function createUserController(req, res) {
+    try {
+        const { name, email, password } = req.body;
 
-    users.push(newUser);
-    res.redirect('/login');
-});
+        const hashedPassword = await bcrypt.hash(password, 10);
 
-app.get('/logout', (req, res) => {
-    req.session.destroy();
-    res.redirect('/login');
-});
+        const user = await createUser(name, email, hashedPassword);
+
+        res.status(201).json({
+            id: user.id,
+            name: user.name,
+            email: user.email
+        });
+
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+}
+
+// PUT /users/:id
+export async function updateUserController(req, res) {
+    try {
+        const { id } = req.params;
+        const { name, email, password } = req.body;
+
+        let hashedPassword;
+
+        if (password) {
+            hashedPassword = await bcrypt.hash(password, 10);
+        }
+
+        const user = await updateUser(id, name, email, hashedPassword);
+
+        res.json(user);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+}
+
+// DELETE /users/:id
+export async function deleteUserController(req, res) {
+    try {
+        const { id } = req.params;
+
+        const message = await deleteUser(id);
+
+        res.json({ message });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+}
