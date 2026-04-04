@@ -1,10 +1,12 @@
 import userController from './controllers/userController';
 import projectController from './controllers/projectController';
+import authRoutes from './routes/authRoutes.js';
 const express = require('express');
 const session = require('express-session');
 const bcrypt = require('bcryptjs');
 const crypto = require('crypto');
 const app = express();
+
 
 
 app.set('view engine', 'ejs');
@@ -30,6 +32,7 @@ const canManageProject = (req, project) => {
 app.use(express.json()); // Bodyy
 app.use('/api', userController);
 app.use('/api', projectController);
+app.use('/api', authRoutes);
 
 
 const PORT = 3000;
