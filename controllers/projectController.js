@@ -63,3 +63,11 @@ export async function deleteProjectController(req, res) {
         res.status(500).json({ error: err.message });
     }
 }
+
+export default {
+    createProjectController,
+    getAllProjectsController,
+    getMyProjectsController,
+    deleteProjectController,
+    updateProjectController
+};

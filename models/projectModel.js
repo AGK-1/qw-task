@@ -1,4 +1,4 @@
-import { initDB } from '../db/db.js';
+import { initDB } from '../tmp/db.js';
 
 ///// Get all projects
 export async function getAllProjects() {
@@ -48,5 +48,3 @@ export async function deleteProject(myId, projectId) {
 
     return "Project deleted!";
 }
-
-export { getAllProjects, getMyProjects, createProject, updateProject, deleteProject };

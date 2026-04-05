@@ -1,7 +1,18 @@
-import { initDB } from '../db/db.js';
+import { initDB } from '../tmp/db.js';
 import bcrypt from 'bcrypt';
 
-export async function login(req, res) {
+export function logoutController(req, res) {
+    req.session.destroy((err) => {
+        if (err) {
+            return res.status(500).send('Logout error');
+        }
+
+        res.clearCookie('connect.sid'); // удалить cookie
+        res.redirect('/login');
+    });
+}
+
+export async function loginController(req, res) {
     const { email, password } = req.body;
 
     const db = await initDB();
@@ -21,11 +32,11 @@ export async function login(req, res) {
         return res.status(401).json({ message: 'Wrong password' });
     }
 
-    // 💥 сохраняем в session 555
+    // 💥 save session session 555
     req.session.userId = user.id;
-
-    res.json({
-        message: 'Login successful',
-        userId: user.id
-    });
+    res.redirect('/projects');
+    // res.json({
+    //     message: 'Login successful',
+    //     userId: user.id
+    // });
 }

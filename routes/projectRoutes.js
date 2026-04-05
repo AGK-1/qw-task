@@ -9,10 +9,10 @@ import {
 
 const router = express.Router();
 
-router.get('/projects', getAllProjectsController);
-router.get('/projects/my/:userId', getMyProjectsController);
-router.post('/projects', createProjectController);
-router.put('/projects/:projectId', updateProjectController);
-router.delete('/projects/:projectId', deleteProjectController);
+router.get('/all', getAllProjectsController);
+router.get('/my/:userId', getMyProjectsController);
+router.post('/create', createProjectController);
+router.put('/update/:projectId', updateProjectController);
+router.delete('/del/:projectId', deleteProjectController);
 
 export default router;

@@ -5,21 +5,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Create new task</title>
-    <link rel="stylesheet" href="/new-project.css">
+    <link rel="stylesheet" href="/css/new-project.css">
 </head>
 
 <body>
     <div class="header">
-        <a href="/projects"><img src="/main.png" alt=""></a>
+        <a href="/projects"><img src="/images/main.png" alt=""></a>
         <ul>
-            <li><a href="/projects/new">Add Project</a></li>
-            <li><a href="">Edit Profile</a></li>
-            <li><a href="/logout">Logout</a></li>
+            <li><a href="/new-project">+ Add Project</a></li>
+            <li><a href="/edit-profile">⚙ Edit Profile</a></li>
+            <li><a href="/auth/logout">↩ Log Out</a></li>
+
         </ul>
     </div>
-    <!-- <h2>
-        <%= userName %>
-    </h2> -->
+
     <div class="main">
         <form action="/projects/new" method="POST">
             <input name="name" placeholder="Project name" required>

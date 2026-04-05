@@ -85,3 +85,12 @@ export async function deleteUserController(req, res) {
         res.status(500).json({ error: err.message });
     }
 }
+
+
+export default {
+  getUsersController,
+  getUserController,
+  createUserController,
+  updateUserController,
+  deleteUserController
+};

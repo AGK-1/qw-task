@@ -1,0 +1,43 @@
+* {
+    margin: 0;
+    padding: 0;  /* padding: auto — не работает, это невалидное значение */
+    box-sizing: border-box;
+    background-color: #fcfcff;
+}
+
+body {
+    display: flex;
+    flex-direction: column;  /* ← вот это исправит строчку */
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+}
+
+input {
+    width: 320px;
+    height: 25px;
+    border-radius: 3px;
+    font-size: 20px;
+}
+
+button {
+    background-color: #009aad;
+    color: aliceblue;
+    border: none;
+    border-radius: 3px;
+    width: 95px;
+    height: 30px;
+}
+
+button:hover {
+    background-color: #034f59;
+    color: aliceblue;
+    cursor: pointer;
+}

@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/projects.css">
+    <title>Projects</title>
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="navbar-logo">
+            <img src="/images/main.png" alt="Logo">
+        </div>
+        <div class="navbar-actions">
+            <a href="/new-project">+ Add Project</a>
+            <a href="/edit-profile">⚙ Edit Profile</a>
+            <a href="/auth/logout">↩ Log Out</a>
+        </div>
+    </nav>
+
+    <h1 class="page-title">Projects</h1>
+
+    <div class="tabs" id="tabs-row">
+        <button class="tab active" onclick="showTab('all', this)">✱ All projects</button>
+        <button class="tab" onclick="showTab('mine', this)">✎ Created by me</button>
+        <button class="tab" onclick="showTab('shared', this)">👥 Shared with me</button>
+    </div>
+
+    <div class="tab-wrapper">
+        <div class="cards-grid" id="cards-container"></div>
+    </div>
+
+    <script>
+        let allProjects = [];
+        let allco = [];
+
+        async function loadMyProj() {
+            const res = await fetch('/projects/my');
+            allco = await res.json();
+            renderCards(allProjects);
+            alignGrid();
+        }
+
+        async function loadProjects() {
+            const res = await fetch('/projects/all');
+            allProjects = await res.json();
+            renderCards(allProjects);
+            alignGrid();
+        }
+
+        function renderCards(projects) {
+            const container = document.getElementById('cards-container');
+            if (projects.length === 0) {
+                container.innerHTML = '<p class="empty">No projects found.</p>';
+                return;
+            }
+            container.innerHTML = projects.map(p => `
+                <div class="card">
+                    <div class="card-header">
+                        <div>
+                            <h2 class="card-title">${p.name}</h2>
+                            <p class="card-owner">✎ user #${p.user_id}</p>
+                        </div>
+                        <a href="/projects/${p.id}/settings">⚙</a>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-desc">${p.description}</p>
+                    </div>
+                    <div class="card-footer">
+                        <div class="card-meta">
+                            <span>👥</span>
+                            <span>💬</span>
+                        </div>
+                        <button class="btn-delete" onclick="deleteProject(${p.id})">🗑</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function alignGrid() {
+            const firstTab = document.querySelector('.tab');
+            const grid = document.getElementById('cards-container');
+            const rect = firstTab.getBoundingClientRect();
+            grid.style.width = rect.width + 'px';
+            grid.style.marginLeft = rect.left + 'px';
+        }
+
+        function showTab(tab, btn) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            btn.classList.add('active');
+            if (tab === 'all') renderCards(allProjects);
+            else if (tab === 'mine') renderCards(allProjects.filter(p => p.user_id === 1));
+            else if (tab === 'shared') renderCards(allProjects.filter(p => p.user_id !== 1));
+        }
+
+        async function deleteProject(id) {
+            await fetch(`/projects/del/${id}`, { method: 'DELETE' });
+            loadProjects();
+        }
+
+        loadProjects();
+        loadMyProj();
+        window.addEventListener('resize', alignGrid);
+        console.log(allco);
+    </script>
+</body>
+
+</html>

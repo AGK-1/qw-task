@@ -1,0 +1,159 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    background-color: #fcfcff;
+}
+
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 24px;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.navbar-logo img {
+    width: 40px;
+    height: 40px;
+}
+
+.navbar-actions {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+}
+
+.navbar-actions a {
+    text-decoration: none;
+    color: #009aad;
+    font-size: 14px;
+}
+
+.navbar-actions a:hover {
+    color: #034f59;
+}
+
+.page-title {
+    text-align: center;
+    font-size: 28px;
+    font-weight: bold;
+    margin: 24px 0 16px;
+}
+
+.tabs {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+}
+
+.tab {
+    padding: 8px 80px;
+    background-color: #efefef;
+    border-radius: 4px;
+    font-size: 14px;
+    color: #444;
+    cursor: pointer;
+    border: none;
+}
+
+.tab:hover {
+    background-color: #e0e0e0;
+}
+
+.tab.active {
+    background-color: #e0e0e0;
+}
+
+.tab-wrapper {
+    position: relative;
+}
+
+.cards-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-top: 24px;
+    position: relative;
+}
+
+.card {
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.card-header {
+    background-color: #2d3748;
+    color: white;
+    padding: 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.card-header a {
+    color: rgb(240, 238, 238);
+    text-decoration: none;
+    font-size: 18px;
+    background: none;
+}
+
+.card-title {
+    font-size: 18px;
+    font-weight: bold;
+    color: rgb(243, 26, 26);
+    margin-bottom: 4px;
+}
+
+.card-owner {
+    font-size: 13px;
+    color: #0e3970;
+}
+
+.card-body {
+    padding: 16px;
+    background-color: #fff;
+}
+
+.card-desc {
+    font-size: 14px;
+    color: #444;
+}
+
+.card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 16px;
+    border-top: 1px solid #e0e0e0;
+    background-color: #fff;
+}
+
+.card-meta {
+    display: flex;
+    gap: 12px;
+    font-size: 14px;
+    color: #666;
+}
+
+.btn-delete {
+    background-color: #e53e3e;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    width: 36px;
+    height: 36px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.btn-delete:hover {
+    background-color: #c53030;
+}
+
+.empty {
+    color: #888;
+    font-size: 14px;
+    margin-top: 16px;
+}

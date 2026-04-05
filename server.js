@@ -1,46 +1,66 @@
-import userController from './controllers/userController';
-import projectController from './controllers/projectController';
-import authRoutes from './routes/authRoutes.js';
-const express = require('express');
-const session = require('express-session');
-const bcrypt = require('bcryptjs');
-const crypto = require('crypto');
+import express from 'express';
+import session from 'express-session';
+import authRouter from './routes/authRoutes.js'; // <--- здесь твой authRouter
+import userRouter from './routes/userRoutes.js';
+import projectRouter from './routes/projectRoutes.js';
+
+import { isAuth } from './middlewares/authMiddleware.js';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 const app = express();
 
-
+app.use(express.static(path.join(path.resolve(), 'public')));
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 
 app.set('view engine', 'ejs');
-app.use(express.urlencoded({ extended: true }));
-
-
-const SESSION_SECRET = 'super-secret-basecamp-key-2026';
+app.set('views', path.join(__dirname, 'views'));
 
 app.use(session({
-    secret: SESSION_SECRET,
+    secret: 'mySecretKey',
     resave: false,
-    saveUninitialized: false,
-    cookie: { maxAge: 3600000 }
+    saveUninitialized: true,
 }));
 
-const isAuth = (req, res, next) => req.session.userId ? next() : res.redirect('/login');
-
-
-const canManageProject = (req, project) => {
-    return req.session.isAdmin || project.ownerId === req.session.userId;
-};
-
-app.use(express.json()); // Bodyy
-app.use('/api', userController);
-app.use('/api', projectController);
-app.use('/api', authRoutes);
-
-
-const PORT = 3000;
-
-app.listen(PORT, () => {
-    console.log(`
-    ✅ Server is running
-    🔗 open in browser: http://localhost:${PORT}
-    __________________________________
-    `);
+app.get('/login', (req, res) => {
+    res.render('login'); // login ejs
 });
+
+
+app.get('/register', (req, res) => {
+    res.render('register'); // register ejs
+});
+
+
+app.get('/', (req, res) => {
+    res.render('index');
+});
+
+
+app.get('/me', isAuth, (req, res) => {
+    res.send(`Привет, пользователь с ID: ${req.session.userId}`);
+});
+
+
+app.get('/projects', isAuth, (req, res) => {
+    res.render('projects');
+});
+
+app.get('/new-project', isAuth, (req, res) => {
+    res.render('new-project');
+});
+
+
+
+
+app.use('/auth', authRouter);
+app.use('/user', userRouter);
+app.use('/projects', projectRouter);
+
+
+
+app.listen(3000, () => console.log('Server running on port 3000  http://localhost:3000/'));

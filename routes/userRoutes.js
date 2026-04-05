@@ -5,14 +5,15 @@ import {
     createUserController,
     updateUserController,
     deleteUserController
-} from '../controllers/userController.js';
+} from '../controllers/userController.js';  // ✅ с .js
 
 const router = express.Router();
 
-router.get('/users', getUsersController);
-router.get('/users/:id', getUserController);
-router.post('/users', createUserController);
-router.put('/users/:id', updateUserController);
-router.delete('/users/:id', deleteUserController);
+
+router.get('/', getUsersController);
+router.get('/:id', getUserController);
+router.post('/register', createUserController);
+router.put('/:id', updateUserController);
+router.delete('/:id', deleteUserController);
 
 export default router;
