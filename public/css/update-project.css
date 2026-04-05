@@ -32,6 +32,11 @@ body {
   min-height: 100vh;
 }
 
+
+img {
+  width: 50px;
+  height: 50px;
+}
 /* ── NAV ── */
 nav {
   background: var(--white);

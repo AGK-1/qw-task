@@ -15,12 +15,13 @@
     <!-- NAV -->
     <nav>
         <div class="nav-logo">
-            <svg viewBox="0 0 40 40" fill="none" stroke="#1a9e9e" stroke-width="1.6" stroke-linecap="round"
+            <a href="/projects"><img src="/images/main.png" alt=""></a>
+            <!-- <svg viewBox="0 0 40 40" fill="none" stroke="#1a9e9e" stroke-width="1.6" stroke-linecap="round"
                 stroke-linejoin="round">
                 <circle cx="20" cy="15" r="7" />
                 <path d="M6 36c0-7.732 6.268-14 14-14s14 6.268 14 14" />
                 <path d="M14 10 Q20 4 26 10" />
-            </svg>
+            </svg> -->
         </div>
         <div class="nav-links">
             <a href="/new-project">
@@ -72,7 +73,7 @@
                     <div class="name-input-wrap">
                         <input type="text" id="projName" value="New Project!!" placeholder="Project name" />
                     </div>
-                    <button class="btn-gray" onclick="alert('Name updated!')">Update Name</button>
+                    <button class="btn-gray" id="updateNameBtn">Update Name</button>
                 </div>
             </div>
 
@@ -83,7 +84,7 @@
                     <div class="desc-input-wrap">
                         <textarea id="projDesc" placeholder="Description"></textarea>
                     </div>
-                    <button class="btn-gray desc-btn" onclick="alert('Description updated!')">Update
+                    <button class="btn-gray desc-btn" id="updateDescBtn">Update
                         Description</button>
                 </div>
             </div>
@@ -184,12 +185,76 @@
                     alert("It is impossible to delete someone else's project.");
                     return;
                 }
-                
+
             } catch (err) {
                 alert("Network error");
             }
         };
 
+        async function updateProject(projectId) {
+            try {
+                const res = await fetch(`/projects/update/${projectId}`, {
+                    method: 'UPDATE'
+                });
+                if (!res.ok) {
+                    alert("It is impossible to update someone else's project.");
+                    return;
+                }
+
+            } catch (err) {
+                alert("Network error");
+            }
+
+        }
+
+
+        const updateNameBtn = document.getElementById('updateNameBtn');
+        const updateDescBtn = document.getElementById('updateDescBtn');
+        const projNameInput = document.getElementById('projName');
+        const projDescInput = document.getElementById('projDesc');
+        const delBtn = document.getElementById('delBtn'); // dataset.id = projectId
+
+        // Обновление только Name
+        updateNameBtn.addEventListener('click', async () => {
+            const projectId = delBtn.dataset.id;
+            const name = projNameInput.value.trim();
+            if (!name) return alert("Name cannot be empty");
+
+            await updateProject(projectId, { name }); // передаем только name
+        });
+
+        // Обновление только Description
+        updateDescBtn.addEventListener('click', async () => {
+            const projectId = delBtn.dataset.id;
+            const description = projDescInput.value.trim();
+
+            await updateProject(projectId, { description }); // передаем только description
+        });
+
+
+        async function updateProject(projectId, data) {
+            try {
+                const res = await fetch(`/projects/update/${projectId}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data),
+                });
+
+                const result = await res.json();
+
+                if (!res.ok) {
+                    alert(result.error || "Update failed");
+                    return false;
+                }
+
+                alert("Update successful!");
+                return true;
+            } catch (err) {
+                console.error(err);
+                alert("Network error");
+                return false;
+            }
+        }
         // Вызов при загрузке страницы
         window.addEventListener('DOMContentLoaded', async () => {
             const project = await loadProject(projectId);

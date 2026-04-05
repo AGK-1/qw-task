@@ -63,12 +63,24 @@ export async function createProjectController(req, res) {
 // PUT /projects/:projectId
 export async function updateProjectController(req, res) {
     try {
-        const { projectId } = req.params;
-        const { name, description, userId } = req.body;
+        const projectId = Number(req.params.projectId);
+        const userId = req.session.userId; // берём из сессии, а не из body
+        const { name, description } = req.body;
+        if (!userId) return res.status(401).json({ error: "Unauthorized" });   
+        const data = {};
+        if (name !== undefined) data.name = name;
+        if (description !== undefined) data.description = description;
+        if (Object.keys(data).length === 0) {
+            return res.status(400).json({ error: "Nothing to update" });
+        }
+        const success = await updateProjectModel(projectId, data, userId);
+        if (!success) {
+            return res.status(403).json({ error: "Project not found or no permission" });
+        }
 
-        const result = await updateProjectModel(projectId, name, description, userId);
-        res.json(result);
+        res.json({ message: "Project updated!" });
     } catch (err) {
+        console.error(err);
         res.status(500).json({ error: err.message });
     }
 }
