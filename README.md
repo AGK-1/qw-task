@@ -19,12 +19,14 @@ need to: npm install "bcrypt": "^6.0.0", "ejs": "^5.0.1", "express": "^5.2.1", "
 1. Clone the repository to your local machine.
 2. Install the necessary dependencies:
 ```bash
-npm install express express-session bcryptjs ejs
+npm init -y
+npm install express express-session bcryptjs ejs sqlite3 sqlite
 ```
 
 ## Usage
 ```
 node server.js
+npm run start
 Open your browser and navigate to http://localhost:3000.
 
 Register a new account to become the owner of your projects.

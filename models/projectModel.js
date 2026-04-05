@@ -1,5 +1,13 @@
 import { initDB } from '../tmp/db.js';
 
+
+////Get one project with id
+export async function getProject(id) {
+    const db = await initDB();
+    const project = await db.get('SELECT * FROM projects WHERE id = ?', [id]);
+    return project; // undefined, если нет проекта
+}
+
 ///// Get all projects
 export async function getAllProjects() {
     const db = await initDB();
@@ -37,14 +45,13 @@ export async function updateProject(projectId, name, description, myId) {
 
 export async function deleteProject(myId, projectId) {
     const db = await initDB();
+
     const result = await db.run(
         'DELETE FROM projects WHERE id = ? AND user_id = ?',
         [projectId, myId]
     );
 
-    if (result.changes === 0) {
-        return "Project not found or you don't have permission!";
-    }
-
-    return "Project deleted!";
+    return result.changes > 0;
 }
+
+

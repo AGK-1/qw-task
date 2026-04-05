@@ -33,77 +33,97 @@
     </div>
 
     <script>
-        let allProjects = [];
-        let allco = [];
 
-        async function loadMyProj() {
+        const currentUserId = "<%= userId %>"; // строка
+        let allProjects = [];
+        let myProjects = [];
+        let sharedProjects = [];
+        async function loadMyProjects() {
             const res = await fetch('/projects/my');
-            allco = await res.json();
-            renderCards(allProjects);
-            alignGrid();
+            const data = await res.json();
+            myProjects = data;
         }
 
-        async function loadProjects() {
+        async function loadAllProjects() {
             const res = await fetch('/projects/all');
-            allProjects = await res.json();
-            renderCards(allProjects);
-            alignGrid();
+            const data = await res.json();
+            allProjects = data;
         }
 
         function renderCards(projects) {
             const container = document.getElementById('cards-container');
-            if (projects.length === 0) {
+            if (!projects.length) {
                 container.innerHTML = '<p class="empty">No projects found.</p>';
                 return;
             }
             container.innerHTML = projects.map(p => `
-                <div class="card">
-                    <div class="card-header">
-                        <div>
-                            <h2 class="card-title">${p.name}</h2>
-                            <p class="card-owner">✎ user #${p.user_id}</p>
-                        </div>
-                        <a href="/projects/${p.id}/settings">⚙</a>
-                    </div>
-                    <div class="card-body">
-                        <p class="card-desc">${p.description}</p>
-                    </div>
-                    <div class="card-footer">
-                        <div class="card-meta">
-                            <span>👥</span>
-                            <span>💬</span>
-                        </div>
-                        <button class="btn-delete" onclick="deleteProject(${p.id})">🗑</button>
-                    </div>
+        <div class="card">
+            <div class="card-header">
+                <div>
+                    <h2 class="card-title">${p.name}</h2>
+                    <p class="card-owner">✎ user #${p.user_id}</p>
                 </div>
-            `).join('');
-        }
-
-        function alignGrid() {
-            const firstTab = document.querySelector('.tab');
-            const grid = document.getElementById('cards-container');
-            const rect = firstTab.getBoundingClientRect();
-            grid.style.width = rect.width + 'px';
-            grid.style.marginLeft = rect.left + 'px';
+                <a href="update-project/${p.id}">⚙</a>
+            </div>
+            <div class="card-body">
+                <p class="card-desc">${p.description}</p>
+            </div>
+            <div class="card-footer">
+                <div class="card-meta">
+                    <span>👥</span>
+                    <span>💬</span>
+                </div>
+                <button class="btn-delete" onclick="deleteProject(${p.id})">🗑</button>
+            </div>
+        </div>
+    `).join('');
         }
 
         function showTab(tab, btn) {
             document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
             btn.classList.add('active');
+
             if (tab === 'all') renderCards(allProjects);
-            else if (tab === 'mine') renderCards(allProjects.filter(p => p.user_id === 1));
-            else if (tab === 'shared') renderCards(allProjects.filter(p => p.user_id !== 1));
+            else if (tab === 'mine') renderCards(myProjects.filter(p => Number(p.user_id) === Number(currentUserId)));
+            else if (tab === 'shared') renderCards(sharedProjects.filter(p => Number(p.user_id) !== Number(currentUserId)));
         }
 
-        async function deleteProject(id) {
-            await fetch(`/projects/del/${id}`, { method: 'DELETE' });
-            loadProjects();
+        async function deleteProject(projectId) {
+            try {
+                const res = await fetch(`/projects/del/${projectId}`, {
+                    method: 'DELETE'
+                });
+                if (!res.ok) {
+                    alert("It is impossible to delete someone else's project.");
+                    return;
+                }
+                await initProjects();
+            } catch (err) {
+                alert("Network error");
+            }
         }
 
-        loadProjects();
-        loadMyProj();
+        function alignGrid() {
+            const firstTab = document.querySelector('.tab');
+            const grid = document.getElementById('cards-container');
+            if (!firstTab) return;
+            const rect = firstTab.getBoundingClientRect();
+            grid.style.width = rect.width + 'px';
+            grid.style.marginLeft = rect.left + 'px';
+        }
+
+        // Инициализация: загружаем оба массива проектов перед отображением
+        async function initProjects() {
+            await loadMyProjects();
+            await loadAllProjects();
+            renderCards(allProjects); // по умолчанию показываем "All"
+            alignGrid();
+        }
+
         window.addEventListener('resize', alignGrid);
-        console.log(allco);
+
+        // Запускаем инициализацию
+        initProjects();
     </script>
 </body>
 

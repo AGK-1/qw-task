@@ -1,5 +1,6 @@
 import express from 'express';
 import {
+    getProjectController,
     getAllProjectsController,
     getMyProjectsController,
     createProjectController,
@@ -9,8 +10,10 @@ import {
 
 const router = express.Router();
 
+
 router.get('/all', getAllProjectsController);
-router.get('/my/:userId', getMyProjectsController);
+router.get('/my', getMyProjectsController);
+router.get('/:projectId', getProjectController);
 router.post('/create', createProjectController);
 router.put('/update/:projectId', updateProjectController);
 router.delete('/del/:projectId', deleteProjectController);

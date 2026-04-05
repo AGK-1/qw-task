@@ -22,14 +22,34 @@ export async function createUser(name, email, password) {
     return { id: result.lastID, name, email };
 }
 
-// Обновить пользователя
+//update user
 export async function updateUser(id, name, email, password) {
     const db = await initDB();
-    await db.run(
-        'UPDATE users SET name = ?, email = ?, password = ? WHERE id = ?',
-        [name, email, password, id]
-    );
-    return { id, name, email };
+    const fields = [];
+    const values = [];
+
+    if (name) {
+        fields.push('name = ?');
+        values.push(name);
+    }
+    if (email) {
+        fields.push('email = ?');
+        values.push(email);
+    }
+    if (password) {
+        fields.push('password = ?');
+        values.push(password);
+    }
+
+    if (fields.length === 0) {
+        return getUser(id); // ничего не обновляем, просто возвращаем пользователя
+    }
+
+    values.push(id);
+    const sql = `UPDATE users SET ${fields.join(', ')} WHERE id = ?`;
+    await db.run(sql, values);
+
+    return getUser(id); // возвращаем актуальные данные
 }
 
 // Удалить пользователя

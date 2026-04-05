@@ -20,14 +20,14 @@ export async function getUsersController(req, res) {
 // GET /users/:id
 export async function getUserController(req, res) {
     try {
-        const { id } = req.params;
+        const id = req.session.userId; // ✅ просто берём из сессии
         const user = await getUser(id);
 
         if (!user) {
             return res.status(404).json({ message: "User not found" });
         }
 
-        res.json(user);
+        res.json(user); // ✅ возвращаем JSON
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
@@ -56,18 +56,36 @@ export async function createUserController(req, res) {
 // PUT /users/:id
 export async function updateUserController(req, res) {
     try {
-        const { id } = req.params;
-        const { name, email, password } = req.body;
+        const userId = req.session.userId;
+        const { name, email, password, currentPassword } = req.body;
+
+        // получаем пользователя из базы
+        const userCur = await getUser(userId);
+        if (!userCur) return res.status(404).json({ error: "User not found" });
 
         let hashedPassword;
 
-        if (password) {
+        if (password && password.trim() !== '') {
+            if (!currentPassword || currentPassword.trim() === '') {
+                return res.status(400).json({ error: "Current password required" });
+            }
+
+            // проверяем текущий пароль
+            const isMatch = await bcrypt.compare(currentPassword, userCur.password);
+            if (!isMatch) {
+                return res.status(400).json({ error: "Current password is incorrect" });
+            }
+
+            // хешируем новый пароль
             hashedPassword = await bcrypt.hash(password, 10);
         }
 
-        const user = await updateUser(id, name, email, hashedPassword);
+        // обновляем пользователя
+        const updatedUser = await updateUser(userId, name, email, hashedPassword);
 
-        res.json(user);
+        // редирект или JSON
+        res.redirect("/projects");
+        // или: res.json({ message: "Profile updated", user: updatedUser });
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
@@ -88,9 +106,9 @@ export async function deleteUserController(req, res) {
 
 
 export default {
-  getUsersController,
-  getUserController,
-  createUserController,
-  updateUserController,
-  deleteUserController
+    getUsersController,
+    getUserController,
+    createUserController,
+    updateUserController,
+    deleteUserController
 };

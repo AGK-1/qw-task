@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/edit-profile.css">
+    <title>Edit profile</title>
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="nav-logo"><a href="/projects"><img src="/images/main.png" alt=""></a></div>
+        <div class="nav-links">
+            <a href="/new-project">+ Add Project</a>
+            <a href="#">⚙ Edit Profile</a>
+            <a href="/auth/logout">↩ Log Out</a>
+        </div>
+    </nav>
+
+    <div class="profile-container">
+        <div class="profile-header">
+            <h1>Edit Profile</h1>
+            <p>Update your personal information</p>
+        </div>
+
+        <form action="/user/update" method="POST">
+            <div class="form-group">
+                <label for="name">Full Name</label>
+                <input type="text" id="name" name="name" placeholder="Enter your name" value="">
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email Address</label>
+                <input type="email" id="email" name="email" placeholder="your@email.com" value="">
+            </div>
+
+            <div class="password-section">
+                <h3>Change Password</h3>
+                <div class="form-group">
+                    <label for="current-password">Current Password</label>
+                    <input type="password" id="current-password" name="currentPassword" placeholder="••••••••">
+                </div>
+
+                <div class="form-group">
+                    <label for="new-password">New Password</label>
+                    <input type="password" id="new-password" name="password" placeholder="••••••••">
+                </div>
+            </div>
+
+            <button type="submit" class="btn-save">Save Changes</button>
+        </form>
+    </div>
+    <script>
+        window.onload = async function () {
+            try {
+                const response = await fetch('/user/cur');
+                if (!response.ok) throw new Error('Network error');
+
+                const data = await response.json();
+                console.log(data);
+                //alert(data.name); 
+                document.getElementById('name').value = data.name;
+                document.getElementById('email').value = data.email;
+            } catch (err) {
+                console.error(err);
+                alert('Cannot load user data');
+            }
+        };
+    </script>
+</body>
+
+</html>

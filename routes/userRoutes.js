@@ -11,9 +11,9 @@ const router = express.Router();
 
 
 router.get('/', getUsersController);
-router.get('/:id', getUserController);
+router.get('/cur', getUserController); // мы берём userId из сессии, id в URL не нужен
 router.post('/register', createUserController);
-router.put('/:id', updateUserController);
-router.delete('/:id', deleteUserController);
+router.post('/update', updateUserController);
+router.delete('/delete', deleteUserController);
 
 export default router;

@@ -1,0 +1,290 @@
+/* ── RESET ── */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* ── VARIABLES ── */
+:root {
+  --teal:       #1a9e9e;
+  --teal-light: #e8f6f6;
+  --teal-mid:   #b2dede;
+  --teal-dark:  #127a7a;
+  --bg:         #f4f6f8;
+  --white:      #ffffff;
+  --border:     #d8e0e0;
+  --text:       #2a2a2a;
+  --muted:      #888;
+  --gray-btn:   #6c757d;
+  --gray-hover: #5a6268;
+  --amber:      #f0a500;
+  --amber-hover:#d4920a;
+  --danger:     #c0392b;
+  --radius:     6px;
+}
+
+/* ── BASE ── */
+body {
+  font-family: 'Raleway', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+}
+
+/* ── NAV ── */
+nav {
+  background: var(--white);
+  border-bottom: 1px solid var(--border);
+  height: 56px;
+  display: flex;
+  align-items: center;
+  padding: 0 2rem;
+}
+
+.nav-logo svg { width: 36px; height: 36px; }
+
+.nav-links {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+}
+
+.nav-links a {
+  font-size: 13.5px;
+  font-weight: 500;
+  color: var(--teal);
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  transition: color 0.2s;
+}
+.nav-links a:hover { color: var(--teal-dark); }
+.nav-links a svg   { width: 14px; height: 14px; }
+
+/* ── LAYOUT ── */
+.layout {
+  display: flex;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 2.5rem 2rem;
+  gap: 2rem;
+  align-items: flex-start;
+}
+
+/* ── MAIN CONTENT ── */
+.main {
+  flex: 1;
+}
+
+.main h1 {
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--text);
+  text-align: center;
+  margin-bottom: 6px;
+}
+
+.created-by {
+  text-align: center;
+  font-size: 13px;
+  color: var(--muted);
+  margin-bottom: 2.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+}
+.created-by svg { width: 13px; height: 13px; color: var(--muted); }
+
+/* ── FORM ROWS ── */
+.form-row {
+  margin-bottom: 1.75rem;
+}
+
+.form-row label {
+  display: block;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text);
+  margin-bottom: 8px;
+}
+
+.input-btn-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+input[type="text"],
+input[type="email"],
+textarea {
+  font-family: 'Raleway', sans-serif;
+  font-size: 14px;
+  color: var(--text);
+  background: var(--white);
+  border: 1px solid #ccc;
+  border-radius: var(--radius);
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+input[type="text"],
+input[type="email"] {
+  width: 100%;
+  height: 42px;
+  padding: 0 12px;
+}
+
+textarea {
+  width: 100%;
+  min-height: 90px;
+  padding: 10px 12px;
+  resize: vertical;
+}
+
+input:focus, textarea:focus {
+  border-color: var(--teal);
+  box-shadow: 0 0 0 3px rgba(26,158,158,0.15);
+}
+
+input::placeholder, textarea::placeholder { color: #aaa; }
+
+/* name input takes full row minus button */
+.name-input-wrap { flex: 1; }
+.desc-input-wrap { flex: 1; }
+
+/* ── GRAY BUTTON ── */
+.btn-gray {
+  height: 42px;
+  padding: 0 20px;
+  background: var(--gray-btn);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius);
+  font-size: 14px;
+  font-weight: 500;
+  font-family: 'Raleway', sans-serif;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.2s;
+  align-self: flex-start;
+}
+.btn-gray:hover { background: var(--gray-hover); }
+.btn-gray.desc-btn { align-self: flex-end; }
+
+/* ── ADD MEMBER ROW ── */
+.member-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.member-input { width: 340px; height: 42px; }
+
+/* Toggle */
+.toggle-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text);
+  white-space: nowrap;
+}
+
+.toggle {
+  position: relative;
+  width: 44px;
+  height: 24px;
+}
+.toggle input { opacity: 0; width: 0; height: 0; }
+.toggle-slider {
+  position: absolute;
+  inset: 0;
+  background: #ccc;
+  border-radius: 24px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.toggle-slider::before {
+  content: '';
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  left: 3px;
+  top: 3px;
+  background: white;
+  border-radius: 50%;
+  transition: transform 0.2s;
+}
+.toggle input:checked + .toggle-slider { background: var(--teal); }
+.toggle input:checked + .toggle-slider::before { transform: translateX(20px); }
+
+/* Amber add-member button */
+.btn-amber {
+  width: 42px;
+  height: 42px;
+  background: var(--amber);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s;
+  flex-shrink: 0;
+}
+.btn-amber:hover { background: var(--amber-hover); }
+.btn-amber svg { width: 20px; height: 20px; }
+
+/* ── SIDEBAR ── */
+.sidebar {
+  width: 220px;
+  flex-shrink: 0;
+  padding-top: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.btn-overview {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  height: 42px;
+  padding: 0 16px;
+  background: var(--teal);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius);
+  font-size: 14px;
+  font-weight: 600;
+  font-family: 'Raleway', sans-serif;
+  cursor: pointer;
+  transition: background 0.2s;
+  white-space: nowrap;
+}
+.btn-overview:hover { background: var(--teal-dark); }
+.btn-overview svg   { width: 16px; height: 16px; }
+
+.btn-delete-project {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: none;
+  border: none;
+  color: var(--text);
+  font-size: 14px;
+  font-weight: 500;
+  font-family: 'Raleway', sans-serif;
+  cursor: pointer;
+  padding: 6px 4px;
+  transition: color 0.2s;
+}
+.btn-delete-project:hover { color: var(--danger); }
+.btn-delete-project svg   { width: 15px; height: 15px; }

@@ -46,16 +46,21 @@ app.get('/me', isAuth, (req, res) => {
 });
 
 
-app.get('/projects', isAuth, (req, res) => {
-    res.render('projects');
+app.get('/projects', isAuth, async (req, res) => {
+    res.render('projects', { userId: req.session.userId });
 });
 
 app.get('/new-project', isAuth, (req, res) => {
     res.render('new-project');
 });
 
+app.get('/edit-profile', isAuth, (req, res) => {
+    res.render('edit-profile');
+});
 
-
+app.get('/update-project/:projectId', (req, res) => {
+    res.render('update-project');
+});
 
 app.use('/auth', authRouter);
 app.use('/user', userRouter);
