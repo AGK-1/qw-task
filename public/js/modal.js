@@ -23,7 +23,10 @@ if (confirmBtn) {
 const confirmBtnForUpdate = document.getElementById("confirmBtnForUpdate");
 if (confirmBtnForUpdate) {
     confirmBtnForUpdate.onclick = function () {
-        alert("asad");
+        if (selectedProjectId !== null) {
+             deleteProjectFromUpdateProject(selectedProjectId);
+        }
+
         closeModal();
     };
 }
@@ -53,8 +56,14 @@ async function deleteProjectFromUpdateProject(projectId) {
             alert("It is impossible to delete someone else's project.");
             return;
         }
+        alert("Deleted successfully");
+        return window.location.href = "/projects";
+
+
         // await initProjects();
     } catch (err) {
+        console.error("REAL ERROR:", err);
+
         alert("Network error");
     }
 }

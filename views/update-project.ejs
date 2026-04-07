@@ -126,7 +126,7 @@
                 </svg>
                 Project Overview
             </button>
-            <button class="btn-delete-project" id="delBtn" onclick="openModal(this.dataset.id)">
+            <button class="btn-delete-project" data-id="${p.id}" id="delBtn" onclick="openModal(this.dataset.id)">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
                     stroke-linejoin="round">
                     <polyline points="3 6 5 6 21 6" />
@@ -256,7 +256,7 @@
                 return false;
             }
         }
-        // Вызов при загрузке страницы
+        // call when page load
         window.addEventListener('DOMContentLoaded', async () => {
             const project = await loadProject(projectId);
         });

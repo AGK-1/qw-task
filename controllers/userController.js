@@ -36,19 +36,23 @@ export async function getUserController(req, res) {
 // POST /users (register)
 export async function createUserController(req, res) {
     try {
-        const { name, email, password } = req.body;
+        const { name, email, password, confirmPassword } = req.body;
 
+        // ✅ first checking
+        if (password !== confirmPassword) {
+            return res.status(400).json({
+                error: "Passwords do not match"
+            });
+        }
+
+        if (password.length < 6) {
+            return res.status(400).json({
+                error: "Password too short"
+            });
+        }
         const hashedPassword = await bcrypt.hash(password, 10);
-
         const user = await createUser(name, email, hashedPassword);
         res.redirect("/login");
-        
-        // res.status(201).json({
-        //     id: user.id,
-        //     name: user.name,
-        //     email: user.email
-        // });
-
     } catch (err) {
         res.status(500).json({ error: err.message });
     }

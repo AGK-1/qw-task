@@ -26,10 +26,10 @@ app.use(session({
     saveUninitialized: true,
 }));
 
+
 app.get('/login', (req, res) => {
     res.render('login'); // login ejs
 });
-
 
 app.get('/register', (req, res) => {
     res.render('register'); // register ejs
@@ -37,14 +37,17 @@ app.get('/register', (req, res) => {
 
 
 app.get('/', (req, res) => {
-    res.render('index');
+    const userId = req.session?.userId; 
+    if (userId) {
+        res.render('projects', { userId: req.session.userId });
+    } else {
+        res.render('index');
+    }
 });
-
 
 app.get('/me', isAuth, (req, res) => {
-    res.send(`Привет, пользователь с ID: ${req.session.userId}`);
+    res.send(`Helooo, user с ID: ${req.session.userId}`);
 });
-
 
 app.get('/projects', isAuth, async (req, res) => {
     res.render('projects', { userId: req.session.userId });
@@ -58,7 +61,8 @@ app.get('/edit-profile', isAuth, (req, res) => {
     res.render('edit-profile');
 });
 
-app.get('/update-project/:projectId', (req, res) => {
+
+app.get('/update-project/:projectId', isAuth, (req, res) => {
     res.render('update-project');
 });
 

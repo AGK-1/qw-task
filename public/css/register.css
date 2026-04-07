@@ -96,3 +96,10 @@ a {
 .field input.invalid~.err {
     display: block;
 }
+
+
+.err {
+    display: none;
+    color: red;
+    font-size: 12px;
+}
