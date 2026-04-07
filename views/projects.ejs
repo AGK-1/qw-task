@@ -35,7 +35,7 @@
 
     <script>
 
-        const currentUserId = "<%= userId %>"; // строка
+        const currentUserId = "<%= userId %>"; // str
         let allProjects = [];
         let myProjects = [];
         let sharedProjects = [];
@@ -116,17 +116,17 @@
             grid.style.marginLeft = rect.left + 'px';
         }
 
-        // Инициализация: загружаем оба массива проектов перед отображением
+        // initilations
         async function initProjects() {
             await loadMyProjects();
             await loadAllProjects();
-            renderCards(allProjects); // по умолчанию показываем "All"
+            renderCards(allProjects); //  "All"
             alignGrid();
         }
 
         window.addEventListener('resize', alignGrid);
 
-        // Запускаем инициализацию
+        
         initProjects();
     </script>
 
