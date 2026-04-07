@@ -17,7 +17,7 @@ To get this project running locally, ensure you have Node.js installed, then fol
 need to: npm install "bcrypt": "^6.0.0", "ejs": "^5.0.1", "express": "^5.2.1", "express-session": "^1.19.0", "sqlite": "^5.1.1", "sqlite3": "^6.0.1"
 
 1. Clone the repository to your local machine.
-2. Install the necessary dependencies:
+2. Install the necessary dependenciess:
 ```bash
 npm init -y
 npm install express express-session bcryptjs ejs sqlite3 sqlite
