@@ -41,12 +41,13 @@ export async function createUserController(req, res) {
         const hashedPassword = await bcrypt.hash(password, 10);
 
         const user = await createUser(name, email, hashedPassword);
-
-        res.status(201).json({
-            id: user.id,
-            name: user.name,
-            email: user.email
-        });
+        res.redirect("/login");
+        
+        // res.status(201).json({
+        //     id: user.id,
+        //     name: user.name,
+        //     email: user.email
+        // });
 
     } catch (err) {
         res.status(500).json({ error: err.message });

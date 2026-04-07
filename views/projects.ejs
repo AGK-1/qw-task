@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/css/projects.css">
+    <link rel="stylesheet" href="/css/modal.css">
     <title>Projects</title>
 </head>
 
@@ -57,25 +58,28 @@
                 return;
             }
             container.innerHTML = projects.map(p => `
-        <div class="card">
-            <div class="card-header">
-                <div>
-                    <h2 class="card-title">${p.name}</h2>
-                    <p class="card-owner">✎ user #${p.user_id}</p>
-                </div>
-                <a href="update-project/${p.id}">⚙</a>
-            </div>
-            <div class="card-body">
-                <p class="card-desc">${p.description}</p>
-            </div>
-            <div class="card-footer">
-                <div class="card-meta">
-                    <span>👥</span>
-                    <span>💬</span>
-                </div>
-                <button class="btn-delete" onclick="deleteProject(${p.id})">🗑</button>
-            </div>
+     <div class="card">
+    <div class="card-header">
+        <div class="card-title-block">
+            <h2 class="card-title">${p.name}</h2>
+            <p class="card-owner">👤 user #${p.user_id}</p>
         </div>
+        <a href="update-project/${p.id}" class="btn-edit">⚙</a>
+    </div>
+
+    <div class="card-body">
+        <p class="card-desc">${p.description}</p>
+    </div>
+
+    <div class="card-footer">
+        <div class="card-meta">
+            <span>👥 0</span>
+            <span>💬 0</span>
+        </div>
+        <button class="btn-delete" onclick="openModal(${p.id})">🗑</button>
+        
+    </div>
+</div>
     `).join('');
         }
 
@@ -88,20 +92,20 @@
             else if (tab === 'shared') renderCards(sharedProjects.filter(p => Number(p.user_id) !== Number(currentUserId)));
         }
 
-        async function deleteProject(projectId) {
-            try {
-                const res = await fetch(`/projects/del/${projectId}`, {
-                    method: 'DELETE'
-                });
-                if (!res.ok) {
-                    alert("It is impossible to delete someone else's project.");
-                    return;
-                }
-                await initProjects();
-            } catch (err) {
-                alert("Network error");
-            }
-        }
+        // async function deleteProject(projectId) {
+        //     try {
+        //         const res = await fetch(`/projects/del/${projectId}`, {
+        //             method: 'DELETE'
+        //         });
+        //         if (!res.ok) {
+        //             alert("It is impossible to delete someone else's project.");
+        //             return;
+        //         }
+        //         await initProjects();
+        //     } catch (err) {
+        //         alert("Network error");
+        //     }
+        // }
 
         function alignGrid() {
             const firstTab = document.querySelector('.tab');
@@ -125,6 +129,19 @@
         // Запускаем инициализацию
         initProjects();
     </script>
+
+
+
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <p>You want delete this product ?</p>
+            <div class="modal-actions">
+                <button id="confirmBtn">Delete</button>
+                <button onclick="closeModal()">Cancel</button>
+            </div>
+        </div>
+    </div>
 </body>
+<script src="/js/modal.js"></script>
 
 </html>

@@ -8,6 +8,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@300;400;500;600;700&display=swap"
         rel="stylesheet" />
     <link rel="stylesheet" href="/css/update-project.css" />
+    <link rel="stylesheet" href="/css/modal.css">
 </head>
 
 <body>
@@ -125,7 +126,7 @@
                 </svg>
                 Project Overview
             </button>
-            <button class="btn-delete-project" id="delBtn" onclick="deleteProject(this.dataset.id)">
+            <button class="btn-delete-project" id="delBtn" onclick="openModal(this.dataset.id)">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
                     stroke-linejoin="round">
                     <polyline points="3 6 5 6 21 6" />
@@ -260,6 +261,17 @@
             const project = await loadProject(projectId);
         });
     </script>
+
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <p>You want delete this product ?</p>
+            <div class="modal-actions">
+                <button id="confirmBtnForUpdate">Delete</button>
+                <button onclick="closeModal()">Cancel</button>
+            </div>
+        </div>
+    </div>
 </body>
+<script src="/js/modal.js"></script>
 
 </html>

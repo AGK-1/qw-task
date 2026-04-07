@@ -76,84 +76,82 @@
     margin-top: 24px;
     position: relative;
 }
-
 .card {
-    border: 1px solid #e0e0e0;
-    border-radius: 6px;
-    overflow: hidden;
+    background: #fffdfd;
+    border-radius: 16px;
+    padding: 20px;
+    margin: 15px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    transition: 0.3s;
+    max-width: 400px;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
 }
 
 .card-header {
-    background-color: #2d3748;
-    color: white;
-    padding: 16px;
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
 }
 
-.card-header a {
-    color: rgb(240, 238, 238);
-    text-decoration: none;
-    font-size: 18px;
-    background: none;
-}
-
 .card-title {
-    font-size: 18px;
-    font-weight: bold;
-    color: rgb(243, 26, 26);
-    margin-bottom: 4px;
+    margin: 0;
+    font-size: 20px;
+    font-weight: 600;
 }
 
 .card-owner {
     font-size: 13px;
-    color: #0e3970;
+    color: #777;
+    margin-top: 4px;
+}
+
+.btn-edit {
+    text-decoration: none;
+    font-size: 18px;
+    opacity: 0.7;
+    transition: 0.2s;
+}
+
+.btn-edit:hover {
+    opacity: 1;
+    transform: rotate(20deg);
 }
 
 .card-body {
-    padding: 16px;
-    background-color: #fff;
+    margin: 15px 0;
 }
 
 .card-desc {
-    font-size: 14px;
-    color: #444;
+    color: #555;
+    line-height: 1.5;
 }
 
 .card-footer {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 10px 16px;
-    border-top: 1px solid #e0e0e0;
-    background-color: #fff;
 }
 
-.card-meta {
-    display: flex;
-    gap: 12px;
+.card-meta span {
+    margin-right: 10px;
     font-size: 14px;
     color: #666;
 }
 
 .btn-delete {
-    background-color: #e53e3e;
-    color: white;
+    background: #ff4d4f;
     border: none;
-    border-radius: 4px;
-    width: 36px;
-    height: 36px;
+    color: white;
+    padding: 6px 10px;
+    border-radius: 8px;
     cursor: pointer;
-    font-size: 16px;
+    transition: 0.2s;
 }
 
 .btn-delete:hover {
-    background-color: #c53030;
-}
-
-.empty {
-    color: #888;
-    font-size: 14px;
-    margin-top: 16px;
+    background: #d9363e;
 }
