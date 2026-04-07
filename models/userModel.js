@@ -15,11 +15,12 @@ export async function getUser(id) {
 // Создать пользователя
 export async function createUser(name, email, password) {
     const db = await initDB();
+    let defaultRole = "user";
     const result = await db.run(
-        'INSERT INTO users (name, email, password) VALUES (?, ?, ?)',
-        [name, email, password]
+        'INSERT INTO users (name, email, password, role) VALUES (?, ?, ?, ?)',
+        [name, email, password, defaultRole]
     );
-    return { id: result.lastID, name, email };
+    return { id: result.lastID, name, email, role: defaultRole };
 }
 
 //update user
@@ -52,11 +53,27 @@ export async function updateUser(id, name, email, password) {
     return getUser(id); // возвращаем актуальные данные
 }
 
-// Удалить пользователя
+// Delete user
 export async function deleteUser(id) {
     const db = await initDB();
     await db.run('DELETE FROM users WHERE id = ?', [id]);
     return "User deleted";
 }
 
-// ✅ Последний export { ... } НЕ НУЖЕН
+
+async function setAdmin(userId) {
+    await db.run(`
+        UPDATE users
+        SET role = 'admin'
+        WHERE id = ?
+    `, [userId]);
+};
+
+async function removeAdmin(userId) {
+    await db.run(`
+        UPDATE users
+        SET role = 'user'
+        WHERE id = ?
+    `, [userId]);
+};
+// ✅ exportes { ... } dont need

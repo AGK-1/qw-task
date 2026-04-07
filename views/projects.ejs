@@ -46,7 +46,7 @@
         }
 
         async function loadAllProjects() {
-            const res = await fetch('/projects/all');
+            const res = await fetch('/projects/all/name');
             const data = await res.json();
             allProjects = data;
         }
@@ -62,7 +62,7 @@
     <div class="card-header">
         <div class="card-title-block">
             <h2 class="card-title">${p.name}</h2>
-            <p class="card-owner">👤 user #${p.user_id}</p>
+            <p class="card-owner">👤 created by user: ${p.user_name}</p>
         </div>
         <a href="update-project/${p.id}" class="btn-edit">⚙</a>
     </div>

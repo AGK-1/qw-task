@@ -12,7 +12,8 @@ export async function initDB() {
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             name TEXT,
             email TEXT,
-            password TEXT
+            password TEXT,
+            role TEXT
         )
     `);
 

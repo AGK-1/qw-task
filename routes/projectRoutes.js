@@ -5,13 +5,15 @@ import {
     getMyProjectsController,
     createProjectController,
     updateProjectController,
-    deleteProjectController
+    deleteProjectController,
+    getProjectWithUserNameController
 } from '../controllers/projectController.js';
 
 const router = express.Router();
 
 
 router.get('/all', getAllProjectsController);
+router.get('/all/name', getProjectWithUserNameController);
 router.get('/my', getMyProjectsController);
 router.get('/:projectId', getProjectController);
 router.post('/create', createProjectController);

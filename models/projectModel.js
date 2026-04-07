@@ -8,6 +8,17 @@ export async function getProject(id) {
     return project; // undefined, если нет проекта
 }
 
+///get project with user name
+export async function getAllProjectsWithUserName() {
+    const db = await initDB();
+    const projects = await db.all(`
+        SELECT projects.*, users.name AS user_name
+        FROM projects
+        JOIN users ON projects.user_id = users.id
+    `);
+    return projects; // return projects with users name 
+}
+
 ///// Get all projects
 export async function getAllProjects() {
     const db = await initDB();

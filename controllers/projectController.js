@@ -4,9 +4,20 @@ import {
     createProject,
     updateProject as updateProjectModel,
     deleteProject as deleteProjectModel,
+    getAllProjectsWithUserName as getAllProjectWithUserNameModel,
     getProject as getOneProjectId
 } from '../models/projectModel.js';
 
+
+//get project with user Name
+export async function getProjectWithUserNameController(req, res) {
+    try {
+        const projects = await getAllProjectWithUserNameModel();
+        res.json(projects);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+}
 
 // Get project with ID
 export async function getProjectController(req, res) {
@@ -66,7 +77,7 @@ export async function updateProjectController(req, res) {
         const projectId = Number(req.params.projectId);
         const userId = req.session.userId; // берём из сессии, а не из body
         const { name, description } = req.body;
-        if (!userId) return res.status(401).json({ error: "Unauthorized" });   
+        if (!userId) return res.status(401).json({ error: "Unauthorized" });
         const data = {};
         if (name !== undefined) data.name = name;
         if (description !== undefined) data.description = description;
