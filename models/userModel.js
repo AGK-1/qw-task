@@ -1,18 +1,18 @@
 import { initDB } from '../tmp/db.js';
 
-// Получить всех пользователей
+// get all users s
 export async function getAllUsers() {
     const db = await initDB();
     return db.all('SELECT * FROM users');
 }
 
-// Получить одного пользователя по ID
+// get one user
 export async function getUser(id) {
     const db = await initDB();
     return db.get('SELECT * FROM users WHERE id = ?', [id]);
 }
 
-// Создать пользователя
+// create user
 export async function createUser(name, email, password) {
     const db = await initDB();
     let defaultRole = "user";
@@ -43,14 +43,14 @@ export async function updateUser(id, name, email, password) {
     }
 
     if (fields.length === 0) {
-        return getUser(id); // ничего не обновляем, просто возвращаем пользователя
+        return getUser(id); // nothing
     }
 
     values.push(id);
     const sql = `UPDATE users SET ${fields.join(', ')} WHERE id = ?`;
     await db.run(sql, values);
 
-    return getUser(id); // возвращаем актуальные данные
+    return getUser(id); // return ok dt
 }
 
 // Delete user
